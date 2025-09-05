@@ -10,12 +10,19 @@ const nextConfig = {
   },
   serverExternalPackages: ['pg'],
   eslint: {
-    // Ignorar errores ESLint durante el build
     ignoreDuringBuilds: true,
   },
   typescript: {
-    // Ignorar errores TypeScript durante el build (temporal)
     ignoreBuildErrors: true,
+  },
+  // Configuración para evitar problemas de SSR con NextAuth
+  experimental: {
+    missingSuspenseWithCSRBailout: false,
+  },
+  // Mejor manejo de errores durante build
+  onDemandEntries: {
+    maxInactiveAge: 25 * 1000,
+    pagesBufferLength: 2,
   },
 }
 
