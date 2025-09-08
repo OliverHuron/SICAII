@@ -11,56 +11,31 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        console.log('🔐 Intento de login:', credentials?.email)
-        
         if (!credentials?.email || !credentials?.password) {
-          console.log('❌ Credenciales vacías')
           return null
         }
 
         try {
-          console.log('🔍 Buscando usuario en la base de datos...')
           const result = await query(
             'SELECT id, username, email, password, role, first_name, last_name, is_active FROM users WHERE email = $1',
             [credentials.email]
           )
 
-          console.log('📊 Resultado de la consulta:', {
-            rowCount: result.rows.length,
-            user: result.rows[0] ? {
-              id: result.rows[0].id,
-              email: result.rows[0].email,
-              role: result.rows[0].role,
-              is_active: result.rows[0].is_active
-            } : null
-          })
-
           const user = result.rows[0]
 
-          if (!user) {
-            console.log('❌ Usuario no encontrado')
+          if (!user || !user.is_active) {
             return null
           }
 
-          if (!user.is_active) {
-            console.log('❌ Usuario no está activo')
-            return null
-          }
-
-          console.log('🔑 Verificando contraseña...')
           const isPasswordValid = await bcrypt.compare(
             credentials.password as string,
             user.password
           )
 
-          console.log('🔑 Contraseña válida:', isPasswordValid)
-
           if (!isPasswordValid) {
-            console.log('❌ Contraseña incorrecta')
             return null
           }
 
-          console.log('✅ Login exitoso')
           return {
             id: user.id.toString(),
             email: user.email,
@@ -69,7 +44,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             role: user.role,
           }
         } catch (error) {
-          console.error('❌ Error en autenticación:', error)
+          console.error('Auth error:', error)
           return null
         }
       }
@@ -85,6 +60,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async session({ session, token }) {
       if (token) {
+        session.user.id = token.sub!
         session.user.role = token.role as string
         session.user.username = token.username as string
       }
@@ -93,5 +69,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   pages: {
     signIn: '/login',
+  },
+  session: {
+    strategy: 'jwt',
   },
 })
