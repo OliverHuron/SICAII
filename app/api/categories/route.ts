@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { query } from '@/lib/db'
 
+export const runtime = 'nodejs'
+
 // GET /api/categories - Obtener todas las categorías
 export async function GET() {
   try {

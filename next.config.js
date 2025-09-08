@@ -8,16 +8,12 @@ const nextConfig = {
       },
     ],
   },
-  serverExternalPackages: ['pg'],
+  serverExternalPackages: ['pg', 'bcryptjs'],
   eslint: {
     ignoreDuringBuilds: true,
   },
   typescript: {
     ignoreBuildErrors: true,
-  },
-  // Configuración para evitar problemas de SSR con NextAuth
-  experimental: {
-    missingSuspenseWithCSRBailout: false,
   },
   // Mejor manejo de errores durante build
   onDemandEntries: {

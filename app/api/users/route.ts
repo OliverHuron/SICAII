@@ -3,6 +3,8 @@ import { auth } from '@/lib/auth'
 import { query } from '@/lib/db'
 import bcrypt from 'bcryptjs'
 
+export const runtime = 'nodejs'
+
 // GET /api/users - Obtener usuarios con filtros y paginación (solo admin)
 export async function GET(request: NextRequest) {
   try {

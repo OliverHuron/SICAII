@@ -3,6 +3,8 @@ import { auth } from '@/lib/auth'
 import { query } from '@/lib/db'
 import bcrypt from 'bcryptjs'
 
+export const runtime = 'nodejs'
+
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
